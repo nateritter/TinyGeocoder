@@ -1,0 +1,100 @@
+What is it?
+------------
+
+TinyGeocoder is a simple script and database which wraps around APIs like  
+Google, Yahoo, and other geocoding services.  The point of this application is 
+to simply create latitude/longitude coordinates from an address, or in the case
+of reverse geocoding, to give the closest address from the given coordinates. 
+When you run out of free queries by one provider for a day, it'll automatically
+move to the next one, and then the next one until you're completely out of
+free geocoding queries at all the providers implemented the script.
+
+Requirements
+------------
+
+TinyGeocoder is currently a PHP script which runs on SQLite.  Thus:
+
+* PHP 5.3+
+* SQLite drivers
+* cURL
+
+It has only been tested on a Linux/Apache configuration, but if someone
+tests it and finds that it works on other servers, please let us know and
+we will revise this README.
+
+Installation
+------------
+
+With the requirements installed, simply drop the script in a box with access
+to the outside (ie, Google, Yahoo, etc).  It does not have to be a publicly 
+known or accessible server, but it does need access to the internet to be able
+to use the publicly accessible APIs for geocoding.
+
+Once all the files are added, just visit the index.php page in a browser to
+complete your setup with API information if you want to use the services
+which request your usage of one (optional).
+
+It's probably a good idea to make your db/tinygeo.sqlite database 
+read/write-able.  Also, make the db folder writeable.
+
+Copy includes/config.sample.php to includes/config.php and make it writeable.
+
+Usage
+------------
+
+Once it's installed and configured, you have a few options for usage.  To 
+test, just go to the root (ie, index.php) file in a browser and use the form
+by submitting an address or location.  You should receive back a latitude
+and longitude coordinate. If you don't, you may have missed a step, have file
+permissions issues, or perhaps the server does not have access to the public
+web.
+
+Alternatively, to being using it as a service programmatically, you can start
+using /create-api.php instead.
+
+Here's an example using the previously public tinygeocoder.com service.
+For traditional geocoding, use the "q" param:
+
+* Go to http://[your ip or domain]/create-api.php?q-Perris,CA
+* The response should be something like: 33.790348,-117.226085
+
+For reverse geocoding, use the "g" param: 
+
+* Go to http://[your ip or domain]/create-api.php?g=33.790348,-117.226085
+* The response should be something like: 498 N Perris Blvd, Perris, CA 
+92570, USA
+
+For JSONP and JavaScript callback functions (which works with both
+traditional and reverse geocoding):
+
+* Go to http://[your ip or domain]/create-api.php?q=San+Diego&callback=myFunc
+* The response should be: myFunc([32.718834,-117.163841]);
+
+Please note that the db/tinygeo.sqlite database holds all unique queries so
+you don't have to go out and waste another hit to the providers for a query
+that you've already run.  I suggest perhaps creating a cron job or otherwise
+dumping old (over a year) data since geocoding datasets are updated every 
+now and then.
+
+Known Issues
+------------
+
+Yes, there are some extraneous files we don't need to have here. I just
+haven't bothered to remove them yet.
+
+Licensing
+------------
+
+TBD for this script, but yea, you do have to abide by the TOS the actual
+data providers have.
+
+Credits and Acknowledgements
+------------
+
+Nate Ritter - Original author (loves receiving monetary "thank you" gifts)
+http://perfectspace.com
+nate@perfectspace.com
+
+Abbas Ali - Modifying original code to use SQLite instead of MySQL
+
+David Evans - Assisting with the JSONP and JavaScript callback functionality
